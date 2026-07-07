@@ -7,10 +7,9 @@
 #include "InputMappingContext.h"
 #include "Engine/Engine.h"
 #include "EnhancedInputSubsystems.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "PlayerCharacter.h"
 
-#include <ios>
+
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -25,10 +24,10 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	// 先拿到 PlayerController
-	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	if (TObjectPtr<APlayerController> PC = Cast<APlayerController>(GetController()))
 	{
 		// 再拿 LocalPlayer
-		if (ULocalPlayer* LP = PC->GetLocalPlayer())
+		if (TObjectPtr<ULocalPlayer> LP = PC->GetLocalPlayer())
 		{
 			// 再拿子系统
 			if (UEnhancedInputLocalPlayerSubsystem* Sub =
@@ -60,6 +59,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		
 		//Move Trigger
 		EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this,&APlayerCharacter::MoveInput);	
+		
+		//Jump Trigger
+		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&APlayerCharacter::DoJumpStart);
+		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&APlayerCharacter::DoJumpEnd);
 	}
 }
 
@@ -89,9 +92,6 @@ void APlayerCharacter::Domove(float right, float left)
 	}
 }
 
-
-
-
 void APlayerCharacter::DoLook(float Yaw, float Pitch)
 {
 	if (GetController())
@@ -101,3 +101,14 @@ void APlayerCharacter::DoLook(float Yaw, float Pitch)
 	}
 	
 }
+
+void APlayerCharacter::DoJumpStart()
+{
+	Jump();
+}
+
+void APlayerCharacter::DoJumpEnd()
+{
+	StopJumping();
+}
+

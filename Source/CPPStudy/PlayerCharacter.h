@@ -6,7 +6,6 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
 #include "InputMappingContext.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "PlayerCharacter.generated.h"
 
 class UInputComponent;
@@ -30,22 +29,28 @@ protected:
 
 	void MoveInput(const FInputActionValue &Value);
 	void MouseLookInput(const FInputActionValue &Value);
-	
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta = (AllowPrivateAccess = true))
-	UInputAction * MoveAction;
-	
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Input",meta = (AllowPrivateAccess = true))
-	UInputMappingContext* IMC_Choice;
+	TObjectPtr<UInputAction> MoveAction;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta = (AllowPrivateAccess = true))
-	UInputAction * LookAction;
+	TObjectPtr<UInputAction> JumpAction;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Input",meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputMappingContext> IMC_Choice;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> LookAction;
 	
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void Domove (float Right, float Left);
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoLook (float Yaw, float Pitch);
-	
+	UFUNCTION(BlueprintCallable, Category="Input")
+	virtual void DoJumpStart();
+	UFUNCTION(BlueprintCallable, Category="Input")
+	virtual void DoJumpEnd();
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
