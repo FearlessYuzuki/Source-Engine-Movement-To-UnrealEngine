@@ -23,7 +23,7 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	// 先拿到 PlayerController
+	/*// 先拿到 PlayerController
 	if (TObjectPtr<APlayerController> PC = Cast<APlayerController>(GetController()))
 	{
 		// 再拿 LocalPlayer
@@ -37,7 +37,7 @@ void APlayerCharacter::BeginPlay()
 				Sub->AddMappingContext(IMC_Choice, 0);
 			}
 		}
-	}
+	}*/
 	//TODO:Hard to understand why official document edit one more cpp file to register the IMC event but i dont know how it works;
 }
 
