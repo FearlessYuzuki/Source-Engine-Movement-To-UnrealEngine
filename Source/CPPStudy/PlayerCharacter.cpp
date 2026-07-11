@@ -8,15 +8,16 @@
 #include "Engine/Engine.h"
 #include "EnhancedInputSubsystems.h"
 #include "PlayerCharacter.h"
+#include "SourceCharacterMovementComponent.h"
 
 
 
 // Sets default values
-APlayerCharacter::APlayerCharacter()
+APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<USourceCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -39,13 +40,20 @@ void APlayerCharacter::BeginPlay()
 		}
 	}*/
 	//TODO:Hard to understand why official document edit one more cpp file to register the IMC event but i dont know how it works;
+	
+	/*if (AutoBhopFunction)
+	{
+		
+	}*/
 }
+
+
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	ShowVelocity();
 }
 
 // Called to bind functionality to input
@@ -61,7 +69,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this,&APlayerCharacter::MoveInput);	
 		
 		//Jump Trigger
-		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&APlayerCharacter::DoJumpStart);
+		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Triggered,this,&APlayerCharacter::DoJumpStart);
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&APlayerCharacter::DoJumpEnd);
 	}
 }
@@ -112,3 +120,14 @@ void APlayerCharacter::DoJumpEnd()
 	StopJumping();
 }
 
+void APlayerCharacter::ShowVelocity()
+{
+	double PlayerSpeed = GetVelocity().Size2D();
+	
+	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Sped = %f"),PlayerSpeed));
+}
+
+/*void DoAutoBhop()
+{
+	
+}*/

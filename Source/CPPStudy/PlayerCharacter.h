@@ -6,7 +6,9 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
 #include "InputMappingContext.h"
+#include "SourceCharacterMovementComponent.h"
 #include "PlayerCharacter.generated.h"
+
 
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -21,7 +23,7 @@ class CPPSTUDY_API APlayerCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	APlayerCharacter();
+	APlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,6 +32,7 @@ protected:
 	void MoveInput(const FInputActionValue &Value);
 	void MouseLookInput(const FInputActionValue &Value);
 protected:
+	//Action UPRO
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> MoveAction;
 	
@@ -42,6 +45,7 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> LookAction;
 	
+	//Action Ufunc	
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void Domove (float Right, float Left);
 	UFUNCTION(BlueprintCallable, Category="Input")
@@ -50,6 +54,11 @@ protected:
 	virtual void DoJumpStart();
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
+
+	//FuncSelfEditTools
+	virtual void ShowVelocity();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AutoBhoping", meta = (AllowPrivateAccess = true))
+	bool AutoBhopFunction;
 
 public:
 	// Called every frame
