@@ -3,7 +3,7 @@
 
 #include "SourceCharacterMovementComponent.h"
 #include "Engine/Engine.h"
-
+#define SOURCEMAXAIRSPEED 2048
 
 USourceCharacterMovementComponent::USourceCharacterMovementComponent()
 {
@@ -30,12 +30,39 @@ void USourceCharacterMovementComponent::ApplySouceStyleAirMovement(float DeltaTi
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Blue,TEXT("Source air calc input"));
 	}
+	FVector wishdir = Acceleration.GetSafeNormal();
+	float wishSpeed = Acceleration.Size();
+	float acceleration = Sv_AirAcceleration;
 	
+	if (wishSpeed > GetCapppingAirAccleration())
+	{
+		wishSpeed = GetCapppingAirAccleration();
+	}
+	
+	AirAcceleration(wishdir,wishSpeed,acceleration,DeltaTime);
 }
 
 void USourceCharacterMovementComponent::AirAcceleration(FVector wishdir, float wishSpeed, float acceleration,
                                                         float DeltaTime)
 {
+	float addSpeed = 0.0f;
+	float currentspeed = 0.0f;
+	float accelspeed = 0.0f;
+	if (!IsFalling())
+	{
+		return;
+	}
 	
+	currentspeed =Velocity.Dot(wishdir);
+	
+	addSpeed = wishSpeed - currentspeed;
+	
+	if (addSpeed <= 0) {return;};
+	
+	accelspeed = wishSpeed*DeltaTime*acceleration;
+	
+	if (accelspeed >addSpeed) {accelspeed = addSpeed;}
+	
+	Velocity += accelspeed*wishdir;
 }
 

@@ -20,6 +20,10 @@ public:
 protected:
 	virtual void CalcVelocity(float DeltaTime, float Friction, bool bFluid, float BrakingDeceleration) override;
 	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Sv_AirAccleration")
+	float Sv_AirAcceleration = 100.0f;
+	
+	virtual float GetCapppingAirAccleration(void) {return 30.0f;};
 private:
 	void ApplySouceStyleAirMovement(float DeltaTime);
 	
