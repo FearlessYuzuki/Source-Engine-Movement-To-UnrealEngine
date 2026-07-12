@@ -5,6 +5,8 @@
 #include "Engine/Engine.h"
 #define SOURCEMAXAIRSPEED 2048
 
+//TODO:Source Ground Speed and UE friction override
+
 USourceCharacterMovementComponent::USourceCharacterMovementComponent()
 {
 	

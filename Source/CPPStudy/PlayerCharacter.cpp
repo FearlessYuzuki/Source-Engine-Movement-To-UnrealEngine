@@ -6,10 +6,8 @@
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
 #include "Engine/Engine.h"
-#include "EnhancedInputSubsystems.h"
 #include "PlayerCharacter.h"
 #include "SourceCharacterMovementComponent.h"
-
 
 
 // Sets default values
@@ -69,8 +67,17 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this,&APlayerCharacter::MoveInput);	
 		
 		//Jump Trigger
-		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Triggered,this,&APlayerCharacter::DoJumpStart);
-		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&APlayerCharacter::DoJumpEnd);
+		if (AutoBhopFunction)
+		{
+			EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Triggered,this,&APlayerCharacter::DoJumpStart);
+			EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&APlayerCharacter::DoJumpEnd);
+		}
+		if (!AutoBhopFunction)
+		{
+			EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&APlayerCharacter::DoJumpStart);
+			EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&APlayerCharacter::DoJumpEnd);
+		}
+		
 	}
 }
 

@@ -7,7 +7,7 @@
 #include "SourceCharacterMovementComponent.generated.h"
 
 /**
- *  "Based On Source SDK - 2013
+ *  Based On Source SDK - 2013
  */
 UCLASS()
 class CPPSTUDY_API USourceCharacterMovementComponent : public UCharacterMovementComponent
@@ -16,7 +16,7 @@ class CPPSTUDY_API USourceCharacterMovementComponent : public UCharacterMovement
 
 public:
 	USourceCharacterMovementComponent();	
-	
+
 protected:
 	virtual void CalcVelocity(float DeltaTime, float Friction, bool bFluid, float BrakingDeceleration) override;
 	

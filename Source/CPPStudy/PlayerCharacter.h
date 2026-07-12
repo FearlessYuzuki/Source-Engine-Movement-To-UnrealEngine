@@ -24,7 +24,12 @@ class CPPSTUDY_API APlayerCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter(const FObjectInitializer& ObjectInitializer);
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AutoBhoping", meta = (AllowPrivateAccess = true))
+	bool AutoBhopFunction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AutoBhoping", meta = (AllowPrivateAccess = true))
+	bool NoBhopSpeedLimit;
+	//TODO:Current Boolean switch to other file to use;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -57,8 +62,7 @@ protected:
 
 	//FuncSelfEditTools
 	virtual void ShowVelocity();
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AutoBhoping", meta = (AllowPrivateAccess = true))
-	bool AutoBhopFunction;
+	
 
 public:
 	// Called every frame
