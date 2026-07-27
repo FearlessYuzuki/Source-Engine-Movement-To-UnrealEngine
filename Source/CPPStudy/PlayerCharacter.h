@@ -6,7 +6,6 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
 #include "InputMappingContext.h"
-#include "SourceCharacterMovementComponent.h"
 #include "PlayerCharacter.generated.h"
 
 
@@ -22,18 +21,23 @@ class CPPSTUDY_API APlayerCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
+	virtual void BeginPlay() override;
+	
 	// Sets default values for this character's properties
 	APlayerCharacter(const FObjectInitializer& ObjectInitializer);
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AutoBhoping", meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tools|AutoBhoping", meta = (AllowPrivateAccess = true))
 	bool AutoBhopFunction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AutoBhoping", meta = (AllowPrivateAccess = true))
-	bool NoBhopSpeedLimit;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tools|AutoBhoping", meta = (AllowPrivateAccess = true))
+	bool EnableBunnyhoping;
+	
+	//FunctionalTools;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Tools")
+	bool SpeedShowingSwitch;
+	
 	//TODO:Current Boolean switch to other file to use;
 	
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 	void MoveInput(const FInputActionValue &Value);
 	void MouseLookInput(const FInputActionValue &Value);
 protected:
@@ -50,6 +54,7 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> LookAction;
 	
+	
 	//Action Ufunc	
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void Domove (float Right, float Left);
@@ -59,11 +64,14 @@ protected:
 	virtual void DoJumpStart();
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
+	
 
 	//FuncSelfEditTools
 	virtual void ShowVelocity();
 	
 
+
+	
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

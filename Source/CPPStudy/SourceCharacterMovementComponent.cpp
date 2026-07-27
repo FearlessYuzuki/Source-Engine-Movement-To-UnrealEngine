@@ -22,7 +22,8 @@ void USourceCharacterMovementComponent::CalcVelocity(float DeltaTime, float Fric
 	}
 	else
 	{
-		Super::CalcVelocity(DeltaTime, Friction, bFluid, BrakingDeceleration);
+		//Super::CalcVelocity(DeltaTime, Friction, bFluid, BrakingDeceleration);
+		
 	}
 }
 
@@ -47,19 +48,17 @@ void USourceCharacterMovementComponent::ApplySouceStyleAirMovement(float DeltaTi
 void USourceCharacterMovementComponent::AirAcceleration(FVector wishdir, float wishSpeed, float acceleration,
                                                         float DeltaTime)
 {
-	float addSpeed = 0.0f;
-	float currentspeed = 0.0f;
-	float accelspeed = 0.0f;
+	float addSpeed = 0.0f;//init
+	float crtspeed = Velocity.Dot(wishdir);
+	float accelspeed = 0.0f;//init
 	if (!IsFalling())
 	{
 		return;
 	}
 	
-	currentspeed =Velocity.Dot(wishdir);
+	addSpeed = wishSpeed - crtspeed;
 	
-	addSpeed = wishSpeed - currentspeed;
-	
-	if (addSpeed <= 0) {return;};
+	if (addSpeed <= 0) {return;}
 	
 	accelspeed = wishSpeed*DeltaTime*acceleration;
 	

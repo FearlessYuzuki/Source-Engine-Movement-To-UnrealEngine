@@ -7,7 +7,7 @@
 #include "SourceCharacterMovementComponent.generated.h"
 
 /**
- *  Based On Source SDK - 2013
+ *  Idea come from Source SDK - 2013
  */
 UCLASS()
 class CPPSTUDY_API USourceCharacterMovementComponent : public UCharacterMovementComponent

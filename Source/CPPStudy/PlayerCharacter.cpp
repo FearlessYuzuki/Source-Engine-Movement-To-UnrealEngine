@@ -6,8 +6,8 @@
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
 #include "Engine/Engine.h"
-#include "PlayerCharacter.h"
 #include "SourceCharacterMovementComponent.h"
+#include "PlayerCharacter.h"
 
 
 // Sets default values
@@ -51,7 +51,10 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	ShowVelocity();
+	if (SpeedShowingSwitch==true)
+	{
+		ShowVelocity();
+	}
 }
 
 // Called to bind functionality to input
@@ -134,7 +137,3 @@ void APlayerCharacter::ShowVelocity()
 	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Sped = %f"),PlayerSpeed));
 }
 
-/*void DoAutoBhop()
-{
-	
-}*/
