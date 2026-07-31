@@ -16,25 +16,35 @@ USourceCharacterMovementComponent::USourceCharacterMovementComponent()
 void USourceCharacterMovementComponent::CalcVelocity(float DeltaTime, float Friction, bool bFluid,
 	float BrakingDeceleration)
 {
-	/*--------------------
-					this part of code is refer to Source SDK 2013
-	--------------------*/
+	/*-------------------------------------------------------------
+			this part of code is refer to Source SDK 2013
+	---------------------------------------------------------------*/
 	
+	if (HasValidData() || HasAnimRootMotion() || DeltaTime < MIN_TICK_TIME)
+	{
+		return;
+	}
 	
+	FVector wishdirection=Velocity.GetSafeNormal2D();
 	FVector wishVelocity;
+	double CurrentSpeed = Velocity.Size2D();
 	
-	double PlayerVelocity2D = Velocity.Size2D();
+	if (CurrentSpeed <= 0)
+	{
+		return;
+	}
 	
 	//To switch air movement from UrealEngine to Source Style(Quake Style)
 	if (IsFalling())
 	{
 		ApplySouceStyleAirMovement(DeltaTime);
+		return;
 	}
 	else //Ground MoveSpeed Calc
 	{
 		
 		//Super::CalcVelocity(DeltaTime, Friction, bFluid, BrakingDeceleration);
-		if (PlayerVelocity2D==0 || !HasValidData() || HasAnimRootMotion() || DeltaTime < MIN_TICK_TIME)
+		if (CurrentSpeed==0 || !HasValidData() || HasAnimRootMotion() || DeltaTime < MIN_TICK_TIME)
 		{
 			return;
 		}
@@ -49,19 +59,12 @@ void USourceCharacterMovementComponent::CalcVelocity(float DeltaTime, float Fric
 		//both idea can be use because thats Origin Source Code does in Source SDK 2013
 		
 		Velocity.Z = 0; //Remove Z axis Velocity
-		double VxNormal = VectorNormalize(Velocity.X);
-		double VyNormal = VectorNormalize(Velocity.Y);
-		//Velocity Normalization
-		
-		//Keep Z axis speed equals zero
-		wishVelocity.Z = 0;
 		
 		//UE5.6Upper Recommend to use Velocity to time X Y axis Vector to use Graphic Booster to reduce the time in calc
-		wishVelocity=Velocity*(VxNormal,VyNormal);
+		wishVelocity=Velocity*wishdirection;
 		
 		//Copy X Y Velocity to Velocity
-		Velocity.X = wishVelocity[0]*DeltaTime;
-		Velocity.Y = wishVelocity[1]*DeltaTime;
+		Velocity = Velocity*wishVelocity;
 		
 		
 	}
