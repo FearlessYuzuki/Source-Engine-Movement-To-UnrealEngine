@@ -3,6 +3,7 @@
 
 #include "SourceCharacterMovementComponent.h"
 #include "Engine/Engine.h"
+#include "PlayerCharacter.h"
 #define SOURCEMAXAIRSPEED 2048
 
 //TODO:Source Ground Speed and UE friction override
@@ -15,14 +16,53 @@ USourceCharacterMovementComponent::USourceCharacterMovementComponent()
 void USourceCharacterMovementComponent::CalcVelocity(float DeltaTime, float Friction, bool bFluid,
 	float BrakingDeceleration)
 {
+	/*--------------------
+					this part of code is refer to Source SDK 2013
+	--------------------*/
+	
+	
+	FVector wishVelocity;
+	
+	double PlayerVelocity2D = Velocity.Size2D();
+	
 	//To switch air movement from UrealEngine to Source Style(Quake Style)
 	if (IsFalling())
 	{
 		ApplySouceStyleAirMovement(DeltaTime);
 	}
-	else
+	else //Ground MoveSpeed Calc
 	{
+		
 		//Super::CalcVelocity(DeltaTime, Friction, bFluid, BrakingDeceleration);
+		if (PlayerVelocity2D==0 || !HasValidData() || HasAnimRootMotion() || DeltaTime < MIN_TICK_TIME)
+		{
+			return;
+		}
+		
+		if (PawnOwner && PawnOwner->IsLocallyControlled())
+		{
+			//get local player (temp idea not use it for now)
+		}
+		// TODO: idea
+		//GetLocalPlayerSpeed to limit or calc speed
+		//current idea is limit max speed or use calculation (such as Friction) to reduce speed too high
+		//both idea can be use because thats Origin Source Code does in Source SDK 2013
+		
+		Velocity.Z = 0; //Remove Z axis Velocity
+		double VxNormal = VectorNormalize(Velocity.X);
+		double VyNormal = VectorNormalize(Velocity.Y);
+		//Velocity Normalization
+		
+		//Keep Z axis speed equals zero
+		wishVelocity.Z = 0;
+		
+		//UE5.6Upper Recommend to use Velocity to time X Y axis Vector to use Graphic Booster to reduce the time in calc
+		wishVelocity=Velocity*(VxNormal,VyNormal);
+		
+		//Copy X Y Velocity to Velocity
+		Velocity.X = wishVelocity[0]*DeltaTime;
+		Velocity.Y = wishVelocity[1]*DeltaTime;
+		
 		
 	}
 }

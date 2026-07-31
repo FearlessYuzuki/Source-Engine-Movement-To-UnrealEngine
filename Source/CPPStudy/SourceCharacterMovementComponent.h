@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "SourceCharacterMovementComponent.generated.h"
-
 /**
  *  Idea come from Source SDK - 2013
  */
@@ -17,15 +16,19 @@ class CPPSTUDY_API USourceCharacterMovementComponent : public UCharacterMovement
 public:
 	USourceCharacterMovementComponent();	
 
+	UPROPERTY(EditAnywhere, Category = "Tools|AutoBhoping")
+	bool EnableBunnyhoping;
+	
 protected:
 	virtual void CalcVelocity(float DeltaTime, float Friction, bool bFluid, float BrakingDeceleration) override;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Sv_AirAccleration")
 	float Sv_AirAcceleration = 100.0f;
 	
-	virtual float GetCapppingAirAccleration(void) {return 30.0f;};
-private:
+	virtual float GetCapppingAirAccleration(void) {return 30.0f;}
+	
 	void ApplySouceStyleAirMovement(float DeltaTime);
 	
 	void AirAcceleration(FVector wishdir, float wishSpeed, float acceleration, float DeltaTime);
+
 };

@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
 #include "Components/InputComponent.h"
@@ -7,7 +8,7 @@
 #include "InputMappingContext.h"
 #include "Engine/Engine.h"
 #include "SourceCharacterMovementComponent.h"
-#include "PlayerCharacter.h"
+
 
 
 // Sets default values
@@ -37,12 +38,10 @@ void APlayerCharacter::BeginPlay()
 			}
 		}
 	}*/
-	//TODO:Hard to understand why official document edit one more cpp file to register the IMC event but i dont know how it works;
+	//Problem: Hard to understand why official document edit one more cpp file to register the IMC event but i dont know how it works;
+	//Solved: to achieve get IMC you need to generate CPP class(PlayerController) instead of direct use character class to get imc
 	
-	/*if (AutoBhopFunction)
-	{
-		
-	}*/
+	//TODO:General Switch about use Source Movement or origin UE Movement
 }
 
 
@@ -135,5 +134,6 @@ void APlayerCharacter::ShowVelocity()
 	double PlayerSpeed = GetVelocity().Size2D();
 	
 	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Sped = %f"),PlayerSpeed));
+	
 }
 
