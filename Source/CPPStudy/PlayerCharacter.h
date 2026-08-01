@@ -73,7 +73,5 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	//Get Speed
-	virtual void GetSpeed(double PlayerSpeedCapture);
+	
 };

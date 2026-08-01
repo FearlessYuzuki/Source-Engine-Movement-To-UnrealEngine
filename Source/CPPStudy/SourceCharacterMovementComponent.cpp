@@ -3,8 +3,8 @@
 
 #include "SourceCharacterMovementComponent.h"
 #include "Engine/Engine.h"
-#include "PlayerCharacter.h"
 #define SOURCEMAXAIRSPEED 2048
+#define DEFAULTSPEED 635
 
 //TODO:Source Ground Speed and UE friction override
 
@@ -16,6 +16,11 @@ USourceCharacterMovementComponent::USourceCharacterMovementComponent()
 void USourceCharacterMovementComponent::CalcVelocity(float DeltaTime, float Friction, bool bFluid,
 	float BrakingDeceleration)
 {
+	//声明 我实在是不想写英文了 因为我本来觉得英文很简单 (虽然确实是这样) 但是这里的SDK逻辑我实在是不想用英语理解 解放一点大脑的思考能力
+	//首先源代码有wishspeed wishspd spd wishdir 等一系列变量 但是注意这里的某一个变量其实是用来暂存数据的 也就是Valve的引擎开发者在设计这一部分的时候
+	//拿了一个变量用来寄存当前角色的移动的速度的速率 是一个标量 但是速度是矢量 是有速度的 而这里normalize的向量是又把方向和长度一起normalize的
+	//所以这里很麻烦的点就是名称问题以及注释问题
+	
 	/*-------------------------------------------------------------
 			this part of code is refer to Source SDK 2013
 	---------------------------------------------------------------*/
@@ -28,6 +33,7 @@ void USourceCharacterMovementComponent::CalcVelocity(float DeltaTime, float Fric
 	FVector wishdirection=Velocity.GetSafeNormal2D();
 	FVector wishVelocity;
 	double CurrentSpeed = Velocity.Size2D();
+	double wishSpeed;
 	
 	if (CurrentSpeed <= 0)
 	{
@@ -49,23 +55,19 @@ void USourceCharacterMovementComponent::CalcVelocity(float DeltaTime, float Fric
 			return;
 		}
 		
-		if (PawnOwner && PawnOwner->IsLocallyControlled())
-		{
-			//get local player (temp idea not use it for now)
-		}
-		// TODO: idea
-		//GetLocalPlayerSpeed to limit or calc speed
+		//GetLocalPlayerSpeed to limit or calc speed(dont needed)
 		//current idea is limit max speed or use calculation (such as Friction) to reduce speed too high
 		//both idea can be use because thats Origin Source Code does in Source SDK 2013
 		
 		Velocity.Z = 0; //Remove Z axis Velocity
 		
 		//UE5.6Upper Recommend to use Velocity to time X Y axis Vector to use Graphic Booster to reduce the time in calc
-		wishVelocity=Velocity*wishdirection;
+		wishSpeed=wishVelocity.Size2D();
 		
-		//Copy X Y Velocity to Velocity
-		Velocity = Velocity*wishVelocity;
-		
+		if (Velocity.Size2D() < SOURCEMAXAIRSPEED && Velocity.Size2D() !=0)
+		{
+			//here to calc speed or cap speed
+		}
 		
 	}
 }
@@ -101,11 +103,17 @@ void USourceCharacterMovementComponent::AirAcceleration(FVector wishdir, float w
 	
 	addSpeed = wishSpeed - crtspeed;
 	
-	if (addSpeed <= 0) {return;}
+	if (addSpeed <= 0)
+	{
+		return;
+	}
 	
 	accelspeed = wishSpeed*DeltaTime*acceleration;
 	
-	if (accelspeed >addSpeed) {accelspeed = addSpeed;}
+	if (accelspeed >addSpeed)
+	{
+		accelspeed = addSpeed;
+	}
 	
 	Velocity += accelspeed*wishdir;
 }
