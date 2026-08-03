@@ -31,4 +31,5 @@ protected:
 	
 	void AirAcceleration(FVector wishdir, float wishSpeed, float acceleration, float DeltaTime);
 
+	void Accelerate(FVector wishdir, float wishSpeed, float acceleration, float DeltaTime);
 };

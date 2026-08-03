@@ -30,15 +30,11 @@ void USourceCharacterMovementComponent::CalcVelocity(float DeltaTime, float Fric
 		return;
 	}
 	
-	FVector wishdirection=Velocity.GetSafeNormal2D();
-	FVector wishVelocity;
-	double CurrentSpeed = Velocity.Size2D();
-	double wishSpeed;
 	
-	if (CurrentSpeed <= 0)
-	{
-		return;
-	}
+	//init va
+	FVector VelocityDirNormalized;
+	FVector WishVelocityWithDir;
+	double wishVelocityPassSpeed;
 	
 	//To switch air movement from UrealEngine to Source Style(Quake Style)
 	if (IsFalling())
@@ -46,28 +42,39 @@ void USourceCharacterMovementComponent::CalcVelocity(float DeltaTime, float Fric
 		ApplySouceStyleAirMovement(DeltaTime);
 		return;
 	}
-	else //Ground MoveSpeed Calc
+	else 
 	{
-		
+		//Ground MoveSpeed Calc
 		//Super::CalcVelocity(DeltaTime, Friction, bFluid, BrakingDeceleration);
-		if (CurrentSpeed==0 || !HasValidData() || HasAnimRootMotion() || DeltaTime < MIN_TICK_TIME)
-		{
-			return;
-		}
-		
 		//GetLocalPlayerSpeed to limit or calc speed(dont needed)
 		//current idea is limit max speed or use calculation (such as Friction) to reduce speed too high
 		//both idea can be use because thats Origin Source Code does in Source SDK 2013
-		
-		Velocity.Z = 0; //Remove Z axis Velocity
-		
 		//UE5.6Upper Recommend to use Velocity to time X Y axis Vector to use Graphic Booster to reduce the time in calc
-		wishSpeed=wishVelocity.Size2D();
 		
-		if (Velocity.Size2D() < SOURCEMAXAIRSPEED && Velocity.Size2D() !=0)
+		wishVelocityPassSpeed = Velocity.Size2D();
+		VelocityDirNormalized = Velocity.GetSafeNormal2D();
+		
+		if (wishVelocityPassSpeed!=0.0f && wishVelocityPassSpeed > SOURCEMAXAIRSPEED)//here to scale velocity if velocity upper than 0 or upper than MAXSPEED
 		{
-			//here to calc speed or cap speed
+			//VectorScale Script
 		}
+		
+		Velocity.Z =0.0f; //init z to ensure
+		Accelerate()//NOT FINISHED
+		Velocity.Z =0.0f;//init again to ensure
+		
+		// Add in any base velocity to the current velocity.
+		//VectorAdd (mv->m_vecVelocity, player->GetBaseVelocity(), mv->m_vecVelocity );
+		//TODO Read SourceSDK2013 line 1963
+		
+		double spd=Velocity.Size2D();//i think here spd means pass the mount of speed to judge //todo: wait to edit witch spd is only a sample
+		
+		if (spd<1.0f)
+		{
+			//init velocity
+			//Todo Finished VectorSubtract (read!)
+		}
+		
 		
 	}
 }
@@ -116,5 +123,13 @@ void USourceCharacterMovementComponent::AirAcceleration(FVector wishdir, float w
 	}
 	
 	Velocity += accelspeed*wishdir;
+}
+
+
+//TODO:Accelerate Function
+void USourceCharacterMovementComponent::Accelerate(FVector wishdir, float wishSpeed, float acceleration,
+	float DeltaTime)      //GroundFriction calc
+{
+	
 }
 
