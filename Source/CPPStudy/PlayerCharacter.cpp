@@ -3,13 +3,11 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Components/InputComponent.h"
 #include "InputActionValue.h"
-#include "InputMappingContext.h"
 #include "Engine/Engine.h"
 #include "SourceCharacterMovementComponent.h"
-
-
 
 // Sets default values
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -23,24 +21,6 @@ APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	/*// 先拿到 PlayerController
-	if (TObjectPtr<APlayerController> PC = Cast<APlayerController>(GetController()))
-	{
-		// 再拿 LocalPlayer
-		if (TObjectPtr<ULocalPlayer> LP = PC->GetLocalPlayer())
-		{
-			// 再拿子系统
-			if (UEnhancedInputLocalPlayerSubsystem* Sub =
-				LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-			{
-				// 注册你的 IMC
-				Sub->AddMappingContext(IMC_Choice, 0);
-			}
-		}
-	}*/
-	//Problem: Hard to understand why official document edit one more cpp file to register the IMC event but i dont know how it works;
-	//Solved: to achieve get IMC you need to generate CPP class(PlayerController) instead of direct use character class to get imc
-	
 	//TODO:General Switch about use Source Movement or origin UE Movement
 }
 
@@ -131,9 +111,9 @@ void APlayerCharacter::DoJumpEnd()
 
 void APlayerCharacter::ShowVelocity()
 {
-	double PlayerSpeed = GetVelocity().Size2D();
-	
-	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Sped = %f"),PlayerSpeed));
-	
+	FVector Velocity = GetVelocity();
+	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("MaxWalkSpeed: %f"), GetCharacterMovement()->MaxWalkSpeed));
+	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Speed: %f %f %f Size2D:%f"), Velocity.X,Velocity.Y,Velocity.Z,Velocity.Size2D()));
 }
+
 
