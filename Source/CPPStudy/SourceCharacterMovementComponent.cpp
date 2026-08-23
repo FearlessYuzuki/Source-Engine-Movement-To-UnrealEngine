@@ -2,6 +2,8 @@
 
 #include "GameFramework/Character.h"
 #include "SourceCharacterMovementComponent.h"
+
+#include "DSP/LFO.h"
 #include "Engine/Engine.h"
 #define SOURCEMAXAIRSPEED 1000
 #define DEFAULTSPEED 635
@@ -22,8 +24,13 @@ void USourceCharacterMovementComponent::CalcVelocity(float DeltaTime, float Fric
 		GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Red,TEXT("Custom CalcVelocity Avaliable"));
 	}
 	
-	Sv_AirAcceleration = 100;
+	FVector InputAcceleration = Acceleration;
+
+	GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Yellow,FString::Printf(TEXT("Acceleration: X=%f Y=%f Z=%f Size2D=%f")
+		,InputAcceleration.X,InputAcceleration.Y,InputAcceleration.Z,InputAcceleration.Size2D()));
 	
+	Sv_AirAcceleration = 100;
+	MaxAcceleration = Sv_AirAcceleration;
 	/* -------------------------------
 			 * Debug Area
 	---------------------------------*/
@@ -145,11 +152,6 @@ void USourceCharacterMovementComponent::WalkMove(float DeltaTime)
 		return;
 	}
 	
-	if (Velocity.Size2D()>SOURCEMAXAIRSPEED)
-	{
-		Velocity = Velocity.GetClampedToMaxSize(SOURCEMAXAIRSPEED);
-	}
-	
 }
 
 void USourceCharacterMovementComponent::GroundAccelerate(FVector wishdir, float wishSpeed, float acceleration,
@@ -159,8 +161,10 @@ void USourceCharacterMovementComponent::GroundAccelerate(FVector wishdir, float 
 	float accelspeed;
 	float crtspeed;
 	
+	float UEAcc = GetMaxAcceleration();
+	
 	crtspeed = Velocity.Dot(wishdir);
-	acceleration = Sv_AirAcceleration;
+	acceleration = UEAcc;
 	addspeed = wishSpeed - crtspeed;
 	if (addspeed <= 0)
 	{

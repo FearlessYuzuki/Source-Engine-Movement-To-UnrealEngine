@@ -112,6 +112,10 @@ void APlayerCharacter::DoJumpEnd()
 void APlayerCharacter::ShowVelocity()
 {
 	FVector Velocity = GetVelocity();
+	double Acc = GetCharacterMovement()->GetCurrentAcceleration().Size2D();
+	FVector PendingSpd = GetCharacterMovement()->GetPendingInputVector();
+	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Crt Acceleration: %f"),Acc));
+	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Pending Vector: %f"),PendingSpd.Size2D()));
 	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("MaxWalkSpeed: %f"), GetCharacterMovement()->MaxWalkSpeed));
 	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Speed: %f %f %f Size2D:%f"), Velocity.X,Velocity.Y,Velocity.Z,Velocity.Size2D()));
 }
