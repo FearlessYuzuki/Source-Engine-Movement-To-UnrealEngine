@@ -18,13 +18,17 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Tools|AutoBhoping")
 	bool EnableBunnyhoping;
-
+	virtual void CalcVelocity(float DeltaTime, float Friction, bool bFluid, float BrakingDeceleration) override;
 	
 protected:
-	virtual void CalcVelocity(float DeltaTime, float Friction, bool bFluid, float BrakingDeceleration) override;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Sv_AirAccleration")
 	float Sv_AirAcceleration = 100.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Sv_AirAccleration")
+	float Sv_StopSpeed = 1.0f;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Basic Game settings")
+	float MaxGroundSpeed = 600.f;
 	
 	virtual float GetCapppingAirAccleration(void) {return 100.0f;}
 	
@@ -34,7 +38,11 @@ protected:
 	
 	void WalkMove(float DeltaTime);
 	
+	void ApplyFriction(float DeltaTime);
+	
 	void GroundAccelerate(FVector wishdir, float wishSpeed, float acceleration, float DeltaTime);
 	
 	FVector VectorScale(const FVector &InVector, double scale);
+	
+	float GetGroundFriction(float DeltaTime);
 };

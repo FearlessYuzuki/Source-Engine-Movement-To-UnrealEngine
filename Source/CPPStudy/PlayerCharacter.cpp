@@ -15,7 +15,46 @@ APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	//First Person Camera Component
+	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(FName("FirstPersonCamera"));
+	FirstPersonSpringArm = CreateDefaultSubobject<USpringArmComponent>(FName("FirstPersonSpringArm"));
+	
+	FirstPersonSpringArm->SetupAttachment(RootComponent);
+	FirstPersonCamera->SetupAttachment(FirstPersonSpringArm, USpringArmComponent::SocketName);
+	
+	//First Person Camera settings
+	FirstPersonSpringArm->TargetArmLength = 100.f;
+	FirstPersonCamera->FieldOfView = 110.f;
+	FirstPersonSpringArm->bUsePawnControlRotation = false;
+	FirstPersonCamera->bUsePawnControlRotation = true;
+	FirstPersonSpringArm->SocketOffset = FVector(155.0f, 0.0f, 54.0f);
+	
+	//Debug Camera Component
+
+	DebugCamera = CreateDefaultSubobject<UCameraComponent>(FName("DebugCamCamera"));
+	DebugSpringArm = CreateDefaultSubobject<USpringArmComponent>(FName("Debug Spring Arm"));
+		
+	DebugCamera->bUsePawnControlRotation = false;
+	DebugSpringArm->bUsePawnControlRotation = false;
+	DebugSpringArm->SetupAttachment(RootComponent);
+	DebugCamera->SetupAttachment(DebugSpringArm,USpringArmComponent::SocketName);
+	DebugSpringArm->AddWorldRotation(FRotator(-90.0f,0.0f,0.0f));
+	DebugCamera->AddWorldRotation(FRotator(0.0f,0.0f,0.0f));
+	
+	
+	//Debug CAM SETTINGS
+	DebugCamera->FieldOfView = 102.f;
+	DebugSpringArm->TargetArmLength = 1600.f;
+	
+	if (bDevMode == false)
+	{
+		FirstPersonCamera->Activate();
+		DebugCamera->Deactivate();
+	}
 }
+
+
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
@@ -60,6 +99,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 			EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&APlayerCharacter::DoJumpEnd);
 		}
 		
+		EnhancedInputComponent->BindAction(DebugAction,ETriggerEvent::Triggered,this,&APlayerCharacter::DebugMenuCalled);
 	}
 }
 
@@ -78,6 +118,45 @@ void APlayerCharacter::MouseLookInput(const FInputActionValue& Value)
 	FVector2D V = Value.Get<FVector2D>();
 	
 	DoLook(V.X,V.Y);
+}
+
+void APlayerCharacter::DebugMenuCalled(const FInputActionValue& Value)
+{
+	TObjectPtr<APlayerController> roller = GetController<APlayerController>(); 
+	
+	if (!roller)
+	{
+		return; 
+	}
+	
+	if (DebugWidgetInstance && DebugWidgetInstance->IsInViewport())
+	{
+		DebugWidgetInstance->RemoveFromParent();
+		roller->bShowMouseCursor = false;
+		roller->SetInputMode(FInputModeGameOnly());
+	}
+	
+	//RenderDebug HUD
+	if (bDevMode != true)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Emerald, FString(TEXT("Sv_DevMode is not true")));
+		return;
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Cyan, FString(TEXT("Sv_DevMode is true")));
+		if (!DebugWidgetInstance)
+		{
+			DebugWidgetInstance = CreateWidget<UUserWidget>(roller,DebugUI);
+		}
+		if (DebugWidgetInstance)
+		{
+			DebugWidgetInstance->AddToViewport();
+			roller->SetShowMouseCursor(true);
+			roller->SetInputMode(FInputModeUIOnly());
+		}
+	}
+	
 }
 
 void APlayerCharacter::Domove(float right, float left)
@@ -113,11 +192,28 @@ void APlayerCharacter::ShowVelocity()
 {
 	FVector Velocity = GetVelocity();
 	double Acc = GetCharacterMovement()->GetCurrentAcceleration().Size2D();
-	FVector PendingSpd = GetCharacterMovement()->GetPendingInputVector();
 	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Crt Acceleration: %f"),Acc));
-	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Pending Vector: %f"),PendingSpd.Size2D()));
 	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("MaxWalkSpeed: %f"), GetCharacterMovement()->MaxWalkSpeed));
 	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Speed: %f %f %f Size2D:%f"), Velocity.X,Velocity.Y,Velocity.Z,Velocity.Size2D()));
 }
 
+void APlayerCharacter::SwitchToFirstCam()
+{
+	if (FirstPersonCamera && DebugCamera)
+	{
+		FirstPersonCamera->Activate();
+		DebugCamera->Deactivate();		
+	}
+	
+}
+
+void APlayerCharacter::SwitchToThirdCam()
+{
+	if (FirstPersonCamera && DebugCamera)
+	{
+		FirstPersonCamera->Deactivate();
+		DebugCamera->Activate();
+	}
+	
+}
 

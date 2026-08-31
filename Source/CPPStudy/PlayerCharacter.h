@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputMappingContext.h"
+#include "Camera/CameraComponent.h"
+#include "MyDebugUIUserWidget.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "PlayerCharacter.generated.h"
 
 
@@ -12,15 +15,38 @@ class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
+class UUserWidget;
 struct FInputActionValue;
 
 UCLASS()
 class CPPSTUDY_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Components",meta = (AllowPrivateAccess = true))
+	TObjectPtr<UCameraComponent> FirstPersonCamera;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Components",meta = (AllowPrivateAccess = true))
+	TObjectPtr<USpringArmComponent> FirstPersonSpringArm;
 
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Components",meta = (AllowPrivateAccess = true))
+	TObjectPtr<UCameraComponent> DebugCamera;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Components",meta = (AllowPrivateAccess = true))
+	TObjectPtr<USpringArmComponent> DebugSpringArm;
+
+	
+public:
+	
+	virtual void SwitchToFirstCam();
+	virtual void SwitchToThirdCam();
+	
 public:
 	virtual void BeginPlay() override;
+	
+	//
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tools|DevMode")
+	bool bDevMode = false;
 	
 	// Sets default values for this character's properties
 	APlayerCharacter(const FObjectInitializer& ObjectInitializer);
@@ -32,12 +58,19 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Tools")
 	bool SpeedShowingSwitch;
 	
-
+public:
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category="DebugUI")
+	TSubclassOf<class UUserWidget> DebugUI;
+	
+	UPROPERTY()
+	TObjectPtr<UUserWidget> DebugWidgetInstance;
 	
 protected:
 	// Called when the game starts or when spawned
 	void MoveInput(const FInputActionValue &Value);
 	void MouseLookInput(const FInputActionValue &Value);
+	void DebugMenuCalled(const FInputActionValue &Value);
+	
 protected:
 	//Action UPRO
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta = (AllowPrivateAccess = true))
@@ -52,6 +85,8 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> LookAction;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> DebugAction;
 	
 	//Action Ufunc	
 	UFUNCTION(BlueprintCallable, Category="Input")
@@ -73,5 +108,6 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
 	
 };
