@@ -1,12 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "GameFramework/Character.h"
 #include "SourceCharacterMovementComponent.h"
-
-#include "EditorDirectories.h"
-#include "MeshPaintVisualize.h"
-#include "DSP/LFO.h"
+#include "GameFramework/Character.h"
 #include "Engine/Engine.h"
+
 #define SOURCEMAXAIRSPEED 1000
 #define DEFAULTSPEED 635
 

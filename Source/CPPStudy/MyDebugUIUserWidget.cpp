@@ -2,6 +2,7 @@
 
 
 #include "MyDebugUIUserWidget.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "PlayerCharacter.h"
 #include "Components/Button.h"
 
@@ -17,6 +18,14 @@ void UMyDebugUIUserWidget::NativeConstruct()
 	if (ThirdPersonButton)
 	{
 		ThirdPersonButton->OnClicked.AddDynamic( this, &UMyDebugUIUserWidget::OnThirdPersonClicked );
+	}
+	if (KillGame)
+	{
+		KillGame->OnClicked.AddDynamic( this, &UMyDebugUIUserWidget::OnKillGameClicked );
+	}
+	if (ResumeGame)
+	{
+		ResumeGame->OnClicked.AddDynamic( this, &UMyDebugUIUserWidget::OnResumeCliceked);
 	}
 }
 
@@ -53,4 +62,19 @@ void UMyDebugUIUserWidget::OnThirdPersonClicked()
 	RemoveFromParent();
 }
 
+void UMyDebugUIUserWidget::OnKillGameClicked()
+{
+	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit,false);
+}
 
+void UMyDebugUIUserWidget::OnResumeCliceked()
+{
+	APlayerController* roller = GetOwningPlayer();
+	if (roller && IsValid(roller))
+	{
+		roller->SetShowMouseCursor(false);
+		roller->SetInputMode(FInputModeGameOnly());
+	}
+	
+	RemoveFromParent();
+}

@@ -54,7 +54,7 @@ public:
 	bool AutoBhopFunction;
 	
 	//FunctionalTools;
-	//Blieprintcalledable UserTools
+	//Blueprintcalledable UserTools
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Tools")
 	bool SpeedShowingSwitch;
 	

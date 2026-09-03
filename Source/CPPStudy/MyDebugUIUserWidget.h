@@ -24,6 +24,13 @@ public:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> ThirdPersonButton;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> KillGame;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> ResumeGame;
+	
 protected:
 	virtual void NativeConstruct() override;
 	
@@ -32,4 +39,10 @@ protected:
 
 	UFUNCTION()
 	void OnThirdPersonClicked();
+	
+	UFUNCTION()
+	void OnKillGameClicked();
+	
+	UFUNCTION()
+	void OnResumeCliceked();
 };
