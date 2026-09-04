@@ -63,7 +63,6 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AMyPawn::MoveInput(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Green, TEXT("Input Pressed"));
 	FVector2D Movement2D = Value.Get<FVector2D>();
 	DoMove(Movement2D.X, Movement2D.Y);
 }

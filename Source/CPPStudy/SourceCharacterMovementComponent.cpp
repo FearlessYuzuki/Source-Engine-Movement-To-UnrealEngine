@@ -2,6 +2,7 @@
 
 #include "SourceCharacterMovementComponent.h"
 #include "GameFramework/Character.h"
+#include "PlayerCharacter.h"
 #include "Engine/Engine.h"
 
 #define SOURCEMAXAIRSPEED 1000
@@ -16,19 +17,25 @@ void USourceCharacterMovementComponent::CalcVelocity(float DeltaTime, float Fric
 	float BrakingDeceleration)
 {
 	/* -------------------------------
-			 * Debug Area
+			 * Debug Area (DevMode only)
 	 ---------------------------------*/
-	if (GEngine)
+	if (const APlayerCharacter* PlayerChar = Cast<APlayerCharacter>(CharacterOwner))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Red,TEXT("Custom CalcVelocity Avaliable"));
-	}
-	DrawDebugLine(GetWorld(),GetActorLocation(),GetActorLocation()+Acceleration.GetSafeNormal2D(),FColor::Green,false,-1,0,3.0f);
-	DrawDebugLine(GetWorld(),GetActorLocation(),GetActorLocation() + Velocity.GetSafeNormal2D() * 300.0f,FColor::Red,false,-1.0f,0,3.0f);
-	
-	FVector InputAcceleration = Acceleration;
+		if (PlayerChar->bDevMode)
+		{
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Red,TEXT("Custom CalcVelocity Avaliable"));
+			}
+			DrawDebugLine(GetWorld(),GetActorLocation(),GetActorLocation()+Acceleration.GetSafeNormal2D(),FColor::Green,false,-1,0,3.0f);
+			DrawDebugLine(GetWorld(),GetActorLocation(),GetActorLocation() + Velocity.GetSafeNormal2D() * 300.0f,FColor::Red,false,-1.0f,0,3.0f);
 
-	GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Yellow,FString::Printf(TEXT("Acceleration: X=%f Y=%f Z=%f Size2D=%f")
-		,InputAcceleration.X,InputAcceleration.Y,InputAcceleration.Z,InputAcceleration.Size2D()));
+			FVector InputAcceleration = Acceleration;
+
+			GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::Yellow,FString::Printf(TEXT("Acceleration: X=%f Y=%f Z=%f Size2D=%f")
+				,InputAcceleration.X,InputAcceleration.Y,InputAcceleration.Z,InputAcceleration.Size2D()));
+		}
+	}
 	/* -------------------------------
 			 * Debug Area
 	---------------------------------*/

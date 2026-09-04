@@ -8,6 +8,9 @@
 #include "InputActionValue.h"
 #include "Engine/Engine.h"
 #include "SourceCharacterMovementComponent.h"
+#include "GameFramework/GameModeBase.h"
+#include "GameFramework/PlayerStart.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -52,6 +55,8 @@ APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 		FirstPersonCamera->Activate();
 		DebugCamera->Deactivate();
 	}
+	
+	PlayerDeathHeight = 14900.f;
 }
 
 
@@ -63,8 +68,6 @@ void APlayerCharacter::BeginPlay()
 	//TODO:General Switch about use Source Movement or origin UE Movement
 }
 
-
-
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
@@ -72,6 +75,11 @@ void APlayerCharacter::Tick(float DeltaTime)
 	if (SpeedShowingSwitch==true)
 	{
 		ShowVelocity();
+	}
+	
+	if (GetActorLocation().Z < PlayerDeathHeight)
+	{
+		Respawn();
 	}
 }
 
@@ -105,7 +113,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::MoveInput(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,"Input Detctive");
+	if (bDevMode)
+	{
+		GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,"Input Detctive");
+	}
 	
 	FVector2D Vector2D = Value.Get<FVector2D>();
 	
@@ -114,7 +125,10 @@ void APlayerCharacter::MoveInput(const FInputActionValue& Value)
 
 void APlayerCharacter::MouseLookInput(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,"Mouse Spining Detective");
+	if (bDevMode)
+	{
+		GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,"Mouse Spining Detective");
+	}
 	FVector2D V = Value.Get<FVector2D>();
 	
 	DoLook(V.X,V.Y);
@@ -215,5 +229,34 @@ void APlayerCharacter::SwitchToThirdCam()
 		DebugCamera->Activate();
 	}
 	
+}
+
+
+void APlayerCharacter::Respawn()
+{
+	AActor *TargetSP = CurrentSpawnPoint;
+	if (!IsValid(TargetSP))
+	{
+		TargetSP = UGameplayStatics::GetActorOfClass(this, APlayerStart::StaticClass());
+	}
+	if (!IsValid(TargetSP))
+	{
+		return;
+	}
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	SetActorLocationAndRotation(TargetSP->GetActorLocation(), TargetSP->GetActorRotation(),false,nullptr,ETeleportType::TeleportPhysics);
+}
+
+void APlayerCharacter::SetSpawnPoint(AActor* InPoint)
+{
+	CurrentSpawnPoint = InPoint;
+	// 调试: DevMode 下打印新重生点
+	if (bDevMode && InPoint)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow,
+			FString::Printf(TEXT("[Player] 重生点已更新: %s @ %s"),
+				*InPoint->GetName(), *InPoint->GetActorLocation().ToString()));
+	}
 }
 

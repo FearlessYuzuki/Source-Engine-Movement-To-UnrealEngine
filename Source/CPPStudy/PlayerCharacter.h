@@ -7,6 +7,7 @@
 #include "InputMappingContext.h"
 #include "Camera/CameraComponent.h"
 #include "MyDebugUIUserWidget.h"
+#include "MyPlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "PlayerCharacter.generated.h"
 
@@ -58,6 +59,8 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Tools")
 	bool SpeedShowingSwitch;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Tools")
+	float PlayerDeathHeight;
 public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category="DebugUI")
 	TSubclassOf<class UUserWidget> DebugUI;
@@ -98,10 +101,19 @@ protected:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
 	
-
 	//FuncSelfEditTools
 	virtual void ShowVelocity();
 
+protected:
+	void Respawn();
+	
+	UPROPERTY()
+	TObjectPtr<AActor> CurrentSpawnPoint;
+	
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetSpawnPoint(AActor* InPoint);
+	
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
