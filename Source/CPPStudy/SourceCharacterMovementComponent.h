@@ -45,4 +45,5 @@ protected:
 	FVector VectorScale(const FVector &InVector, double scale);
 	
 	float GetGroundFriction(float DeltaTime);
+	
 };

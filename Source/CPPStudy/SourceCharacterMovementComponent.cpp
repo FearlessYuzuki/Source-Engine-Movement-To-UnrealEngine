@@ -212,8 +212,6 @@ void USourceCharacterMovementComponent::ApplyFriction(float DeltaTime)
 	
 }	
 
-
-
 //----------Tools Area ---------//
 FVector USourceCharacterMovementComponent::VectorScale(const FVector& InVector, double scale)
 {
