@@ -180,6 +180,23 @@ void APlayerCharacter::Domove(float right, float left)
 		AddMovementInput(GetActorRightVector(), right);
 		AddMovementInput(GetActorForwardVector(), left);
 	}
+	
+	//Version 2
+	/*if (!Controller)
+	{
+		return;
+	}
+	
+	const FRotator ControlRotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0.0f, ControlRotation.Yaw, 0.0f);
+
+	const FVector ForwardDirection =
+		FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	const FVector RightDirection =
+		FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+	AddMovementInput(ForwardDirection, left);
+	AddMovementInput(RightDirection, right);*/
 }
 
 void APlayerCharacter::DoLook(float Yaw, float Pitch)
@@ -189,7 +206,6 @@ void APlayerCharacter::DoLook(float Yaw, float Pitch)
 		AddControllerYawInput(Yaw);
 		AddControllerPitchInput(Pitch);
 	}
-	
 }
 
 void APlayerCharacter::DoJumpStart()
@@ -262,7 +278,7 @@ void APlayerCharacter::SetSpawnPoint(AActor* InPoint)
 
 //TODO: Fearless Yuzuki Rebuild Version 2 
 
-//improve more feeling about source it is the first virsion just for get PlayerRotation and apply it to Speed
+//improve more feeling about source it is the first version just to get PlayerRotation and apply it to Speed
 FRotator APlayerCharacter::GetMouseFacing(float DeltaTime)
 {
 	if (IsValid(Controller))
@@ -270,6 +286,7 @@ FRotator APlayerCharacter::GetMouseFacing(float DeltaTime)
 		FRotator Rotation = Controller->GetControlRotation();
 		return Rotation;
 	}
+	return FRotator::ZeroRotator;
 }
 
 

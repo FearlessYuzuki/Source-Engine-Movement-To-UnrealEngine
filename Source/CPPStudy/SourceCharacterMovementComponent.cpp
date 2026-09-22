@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.h"
 #include "Engine/Engine.h"
+#include "Kismet/GameplayStatics.h"
 
 #define SOURCEMAXAIRSPEED 1000
 #define DEFAULTSPEED 635
@@ -128,20 +129,29 @@ void USourceCharacterMovementComponent::WalkMove(float DeltaTime)
 	float wishSpeed = Acceleration.Size2D();
 	float acceleration = Acceleration.Size2D();
 	bool bCanAccele;
+	/*FVector fmove,smove;
+	FVector wishVel;
+	
+	APlayerCharacter* PlayerChar = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (PlayerChar)
+	{
+		fmove = PlayerChar->GetActorForwardVector()*Acceleration.GetSafeNormal2D();
+		smove = PlayerChar->GetActorRightVector()*Acceleration.GetSafeNormal2D();
+	}
+	else
+	{
+		return;
+	}
+	
+	wishVel = fmove+smove;
+
+	FVector wishdir = wishVel;*/
 	
 	if (Velocity.Z != 0)
 	{
 		Velocity.Z = 0;
 	}
 	
-	/*if (Velocity.Size()<MaxGroundSpeed && Acceleration.Size()!=0)
-	{
-		bCanAccele = true;
-	}
-	else
-	{
-		bCanAccele = false;
-	}*/
 	bCanAccele = true;
 	
 	//TODO:Chara move like slide and if chara sped = 0 cant accel
