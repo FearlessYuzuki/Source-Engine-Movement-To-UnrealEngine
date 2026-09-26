@@ -277,16 +277,3 @@ void APlayerCharacter::SetSpawnPoint(AActor* InPoint)
 }
 
 //TODO: Fearless Yuzuki Rebuild Version 2 
-
-//improve more feeling about source it is the first version just to get PlayerRotation and apply it to Speed
-FRotator APlayerCharacter::GetMouseFacing(float DeltaTime)
-{
-	if (IsValid(Controller))
-	{
-		FRotator Rotation = Controller->GetControlRotation();
-		return Rotation;
-	}
-	return FRotator::ZeroRotator;
-}
-
-

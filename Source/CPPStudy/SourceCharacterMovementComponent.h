@@ -19,16 +19,28 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Tools|AutoBhoping")
 	bool EnableBunnyhoping;
 	virtual void CalcVelocity(float DeltaTime, float Friction, bool bFluid, float BrakingDeceleration) override;
+
+	void SetMovementInput(float ForwardIn,float SideIn);
 	
 protected:
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Sv_AirAccleration")
+	UPROPERTY(EditAnywhere,Category="Move Settings")
 	float Sv_AirAcceleration = 100.0f;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Sv_AirAccleration")
-	float Sv_StopSpeed = 1.0f;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Basic Game settings")
+	UPROPERTY(EditAnywhere,Category="Move Settings")
+	float Sv_StopSpeed = 1.0f;	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Move Settings")
 	float MaxGroundSpeed = 600.f;
+	UPROPERTY(EditAnywhere,Category="Move Settings")
+	float Sv_Friction = 5.f;
+	UPROPERTY(EditAnywhere,Category="Move Settings")
+	float Sv_Accelerate = 12.f;
+	UPROPERTY(EditAnywhere,Category="Move Settings")
+	float Sv_AirCappingSpeed = 30.f;
+	
+	float mv_forwardMove = 0.f;
+	float mv_sideMove = 0.f;
+	float DebugLineLength = 500.f;
+	
 	
 	virtual float GetCapppingAirAccleration(void) {return 100.0f;}
 	
@@ -40,10 +52,14 @@ protected:
 	
 	void ApplyFriction(float DeltaTime);
 	
-	void GroundAccelerate(FVector wishdir, float wishSpeed, float acceleration, float DeltaTime);
+	void Accelerate(FVector wishdir, float wishSpeed, float acceleration, float DeltaTime);
 	
 	FVector VectorScale(const FVector &InVector, double scale);
 	
 	float GetGroundFriction(float DeltaTime);
 	
+	void CalcVector(const FRotator &Angles, float Forward);
+	
+	public:
+	virtual void DrawCameraDebugline(bool bDevMode);
 };
