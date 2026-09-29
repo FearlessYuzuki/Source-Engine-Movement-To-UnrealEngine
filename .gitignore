@@ -76,3 +76,7 @@ DerivedDataCache/*
 
 #HeavyAssetsContent ignore
 Content/HeavyAssets/
+# Agent / tool caches (never useful in the repo)
+.claude/
+__pycache__/
+*.pyc

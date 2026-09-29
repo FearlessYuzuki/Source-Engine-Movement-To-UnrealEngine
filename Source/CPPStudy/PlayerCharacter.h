@@ -71,6 +71,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	void MoveInput(const FInputActionValue &Value);
+	//RouteB fix: Enhanced Input sends no zero-value Triggered on release, so the clear lives here
+	void MoveInputReleased();
+	void ClearSourceMovementInput();
 	void MouseLookInput(const FInputActionValue &Value);
 	void DebugMenuCalled(const FInputActionValue &Value);
 	

@@ -20,14 +20,28 @@ public:
 	bool EnableBunnyhoping;
 	virtual void CalcVelocity(float DeltaTime, float Friction, bool bFluid, float BrakingDeceleration) override;
 
-	void SetMovementInput(float ForwardIn,float SideIn);
-	
+	//RouteB fix: scalars are owned here; input layer must write 0 on release or they stick
+	void SetMovementInput(float ForwardIn, float SideIn);
+
+	UFUNCTION(BlueprintPure, Category = "Source Movement|WishVel")
+	FVector CalcWishVel() const;
+
+	void CalcWishDirAndSpeed(FVector& OutWishDir, float& OutWishSpeed) const;
+
+	void GetViewBasisVectors(FVector& OutForward, FVector& OutRight) const;
+
+	UFUNCTION(BlueprintPure, Category = "Source Movement|WishVel")
+	float GetForwardMove() const { return mv_forwardMove; }
+
+	UFUNCTION(BlueprintPure, Category = "Source Movement|WishVel")
+	float GetSideMove() const { return mv_sideMove; }
+
 protected:
 	
 	UPROPERTY(EditAnywhere,Category="Move Settings")
-	float Sv_AirAcceleration = 100.0f;
+	float Sv_AirAcceleration = 10.0f; //RouteB fix: cap limits addspeed only now, so 100 -> 10 (Source sv_airaccelerate)
 	UPROPERTY(EditAnywhere,Category="Move Settings")
-	float Sv_StopSpeed = 1.0f;	
+	float Sv_StopSpeed = 100.f; //H5 fix: Source sv_stopspeed default is 100, not 1	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Move Settings")
 	float MaxGroundSpeed = 600.f;
 	UPROPERTY(EditAnywhere,Category="Move Settings")
@@ -42,7 +56,7 @@ protected:
 	float DebugLineLength = 500.f;
 	
 	
-	virtual float GetCapppingAirAccleration(void) {return 100.0f;}
+	virtual float GetCapppingAirAccleration() {return 100.0f;}
 	
 	void AirMove(float DeltaTime);
 	

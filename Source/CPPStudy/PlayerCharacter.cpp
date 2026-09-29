@@ -8,7 +8,6 @@
 #include "InputActionValue.h"
 #include "Engine/Engine.h"
 #include "SourceCharacterMovementComponent.h"
-#include "GameFramework/GameModeBase.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -95,6 +94,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		//Move Trigger
 		EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this,&APlayerCharacter::MoveInput);	
 		
+		//RouteB fix: Enhanced Input fires Completed on release, never a zero-value Triggered
+		EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Completed,this,&APlayerCharacter::MoveInputReleased);
+		EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Canceled, this,&APlayerCharacter::MoveInputReleased);
+		
 		//Jump Trigger
 		if (AutoBhopFunction)
 		{
@@ -119,8 +122,25 @@ void APlayerCharacter::MoveInput(const FInputActionValue& Value)
 	}
 	
 	FVector2D Vector2D = Value.Get<FVector2D>();
-	
-	Domove(Vector2D.X,Vector2D.Y);
+
+	//RouteB fix: send the scalars straight to the movement component instead of AddMovementInput
+	if (USourceCharacterMovementComponent* SourceMove = Cast<USourceCharacterMovementComponent>(GetCharacterMovement()))
+	{
+		SourceMove->SetMovementInput(Vector2D.Y, Vector2D.X); //Y = forward, X = side
+	}
+}
+
+void APlayerCharacter::MoveInputReleased()
+{
+	ClearSourceMovementInput();
+}
+
+void APlayerCharacter::ClearSourceMovementInput()
+{
+	if (USourceCharacterMovementComponent* SourceMove = Cast<USourceCharacterMovementComponent>(GetCharacterMovement()))
+	{
+		SourceMove->SetMovementInput(0.0f, 0.0f);
+	}
 }
 
 void APlayerCharacter::MouseLookInput(const FInputActionValue& Value)
@@ -148,6 +168,8 @@ void APlayerCharacter::DebugMenuCalled(const FInputActionValue& Value)
 		DebugWidgetInstance->RemoveFromParent();
 		roller->bShowMouseCursor = false;
 		roller->SetInputMode(FInputModeGameOnly());
+		//RouteB fix: input was ignored while the panel was up, the release event got swallowed
+		ClearSourceMovementInput();
 	}
 	
 	//RenderDebug HUD
@@ -168,6 +190,8 @@ void APlayerCharacter::DebugMenuCalled(const FInputActionValue& Value)
 			DebugWidgetInstance->AddToViewport();
 			roller->SetShowMouseCursor(true);
 			roller->SetInputMode(FInputModeUIOnly());
+			//RouteB fix: UIOnly makes the viewport ignore input, so stop here
+			ClearSourceMovementInput();
 		}
 	}
 	
@@ -221,8 +245,19 @@ void APlayerCharacter::DoJumpEnd()
 void APlayerCharacter::ShowVelocity()
 {
 	FVector Velocity = GetVelocity();
-	double Acc = GetCharacterMovement()->GetCurrentAcceleration().Size2D();
-	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Crt Acceleration: %f"),Acc));
+
+	//RouteB fix: Acceleration is always 0 now, print the scalar channel instead
+	if (const USourceCharacterMovementComponent* SourceMove = Cast<USourceCharacterMovementComponent>(GetCharacterMovement()))
+	{
+		FVector WishDir = FVector::ZeroVector;
+		float WishSpeed = 0.0f;
+		SourceMove->CalcWishDirAndSpeed(WishDir, WishSpeed);
+		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Green, FString::Printf(
+			TEXT("mv: forward=%.3f side=%.3f"), SourceMove->GetForwardMove(), SourceMove->GetSideMove()));
+		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Green, FString::Printf(
+			TEXT("wishdir: X=%.3f Y=%.3f | wishspeed=%.1f"), WishDir.X, WishDir.Y, WishSpeed));
+	}
+
 	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("MaxWalkSpeed: %f"), GetCharacterMovement()->MaxWalkSpeed));
 	GEngine->AddOnScreenDebugMessage(-1 , 0.0f, FColor::Green,FString::Printf(TEXT("Speed: %f %f %f Size2D:%f"), Velocity.X,Velocity.Y,Velocity.Z,Velocity.Size2D()));
 }
@@ -259,6 +294,9 @@ void APlayerCharacter::Respawn()
 	{
 		return;
 	}
+	UE_LOG(LogTemp, Warning, TEXT("[Player] Respawn() -> %s @ %s"),
+		*GetNameSafe(TargetSP), *TargetSP->GetActorLocation().ToString());
+
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 	SetActorLocationAndRotation(TargetSP->GetActorLocation(), TargetSP->GetActorRotation(),false,nullptr,ETeleportType::TeleportPhysics);
