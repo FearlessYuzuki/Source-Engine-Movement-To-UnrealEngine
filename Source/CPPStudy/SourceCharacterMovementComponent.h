@@ -72,8 +72,6 @@ protected:
 	
 	float GetGroundFriction(float DeltaTime);
 	
-	void CalcVector(const FRotator &Angles, float Forward);
-	
 	public:
 	virtual void DrawCameraDebugline(bool bDevMode);
 };

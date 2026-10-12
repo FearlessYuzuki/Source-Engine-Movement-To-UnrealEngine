@@ -8,7 +8,6 @@
 #include "Math/RotationMatrix.h"
 
 
-
 USourceCharacterMovementComponent::USourceCharacterMovementComponent()
 {
 	//H3 fix: one-time init moved out of CalcVelocity. Runtime values are owned by UPROPERTYs.
@@ -266,11 +265,6 @@ FVector USourceCharacterMovementComponent::VectorScale(const FVector& InVector, 
 float USourceCharacterMovementComponent::GetGroundFriction(float DeltaTime)
 {
 	return GroundFriction;
-}
-
-void USourceCharacterMovementComponent::CalcVector(const FRotator &Angles, float Forward)
-{
-	
 }
 
 void USourceCharacterMovementComponent::DrawCameraDebugline(bool bDevMode)
