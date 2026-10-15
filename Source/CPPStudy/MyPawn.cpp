@@ -70,6 +70,24 @@ void AMyPawn::MoveInput(const FInputActionValue& Value)
 
 void AMyPawn::DoMove(float Right, float Forward)
 {
+	/* ────────────────────────────────────────────────────────────────────────
+	 * [路线B 边界说明] —— 本次重构未改动本函数的逻辑，原因如下：
+	 *
+	 *   笔记第五节事实 #5：MyPawn 同样用 Actor 基，备用 Pawn 会复现同样的错位。
+	 *   但路线 B 的形态是「标量存在移动组件里 + 合成在组件内部」，
+	 *   而 AMyPawn 派生自 APawn（MyPawn.h:18），**根本没有 CharacterMovementComponent**，
+	 *   没有任何地方能承载 mv_forwardMove / mv_sideMove —— 路线 B 在此结构上不适用。
+	 *
+	 *   两条可选后续（本次未做，避免在无法实机验证的情况下改动非主链代码）：
+	 *     ① 若 MyPawn 只是实验/备用：改成 ACharacter 并挂
+	 *        USourceCharacterMovementComponent，即可完全复用路线 B；
+	 *     ② 若必须保持 APawn：把下面的 Actor 基换成视角 Yaw 基（路线 A 的思路）——
+	 *        const FRotator YawRotation(0.0f, GetControlRotation().Yaw, 0.0f);
+	 *        AddMovementInput(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y), Right);
+	 *        AddMovementInput(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X), Forward);
+	 *
+	 *   现状：MyPawn 在全工程无任何引用（仅自身 .h/.cpp），不构成当前 bug，故先标注不动。
+	 * ──────────────────────────────────────────────────────────────────────── */
 	if (GetController())
 	{
 		AddMovementInput(GetActorRightVector(), Right);

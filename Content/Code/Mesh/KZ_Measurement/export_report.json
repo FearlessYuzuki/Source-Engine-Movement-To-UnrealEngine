@@ -1,0 +1,45 @@
+{
+  "solid_fbx": "D:\\Work\\GameDev\\UnrealProject\\UnrealStudyProject\\Content\\Code\\Mesh\\KZ_Measurement\\SM_KZ_Measurement.fbx",
+  "solid_file_bytes": 172636,
+  "visual_fbx": "D:\\Work\\GameDev\\UnrealProject\\UnrealStudyProject\\Content\\Code\\Mesh\\KZ_Measurement\\SM_KZ_Measurement_Marks.fbx",
+  "visual_file_bytes": 371580,
+  "collision_hulls": 57,
+  "converted_texts": 94,
+  "solid_bounds_metres": [
+    131.71499633789062,
+    70.0,
+    3.1399998664855957
+  ],
+  "visual_vertices": 24275,
+  "placement": "Both assets use world origin pivot; place both at Location 0,0,0, Rotation 0,0,0, Scale 1,1,1.",
+  "import": "Import Collision ON; Auto Generate Collision OFF. Marks must have NoCollision. No runtime HUD included.",
+  "validation": {
+    "metadata": [
+      {
+        "file": "SM_KZ_Measurement.fbx",
+        "models": 58,
+        "convex_colliders": 57,
+        "UnitScaleFactor": [
+          1.0
+        ],
+        "fbx_version": 7400
+      },
+      {
+        "file": "SM_KZ_Measurement_Marks.fbx",
+        "models": 1,
+        "convex_colliders": 0,
+        "UnitScaleFactor": [
+          1.0
+        ],
+        "fbx_version": 7400
+      }
+    ],
+    "roundtrip_body_bounds_m": [
+      131.71499633789062,
+      70.0,
+      3.1399998664855957
+    ],
+    "scale_roundtrip_ok": true,
+    "roundtrip_collision_hulls": 57
+  }
+}

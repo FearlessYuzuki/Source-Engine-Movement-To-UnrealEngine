@@ -71,8 +71,13 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	void MoveInput(const FInputActionValue &Value);
-	//RouteB fix: Enhanced Input sends no zero-value Triggered on release, so the clear lives here
+	// [路线B 必需] 松手时把移动标量清零。没有它 = 输入粘住 = 地面停不下来，
+	// 详见 .cpp 里的根因说明（Enhanced Input 松手只发 Completed，不发值为 0 的 Triggered）。
+	// 签名与已有 DoJumpEnd() 一致（Enhanced Input 支持无参回调），故同样不带参数。
 	void MoveInputReleased();
+	// [路线B 必需] 标量清零的唯一入口：MoveInputReleased 与切输入模式的
+	// DebugMenuCalled 都走这里（FInputModeUIOnly 会让视口忽略输入，
+	// 松开按键同样收不到 Completed，不主动清就会粘住）。
 	void ClearSourceMovementInput();
 	void MouseLookInput(const FInputActionValue &Value);
 	void DebugMenuCalled(const FInputActionValue &Value);
