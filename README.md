@@ -71,6 +71,45 @@ UE5 默认地面逻辑会**直接杀死 Bhop 速度**：
 
 ---
 
+## AI 使用注意！！
+
+> ⚠️ **本项目包含 AI 工具辅助开发。**
+
+### 开发环境
+
+- **开发工具**：Pi Coding Agent
+- **模型组合**：混合模型
+  - `deepseek-flash`
+  - `mimo-2.6-pro`
+  - `claude opus 5.5`
+  - `gpt-sol-6.1`
+
+本人使用 **Pi Coding Agent**，搭配 `deepseek-flash`、`mimo-2.6-pro`、`claude opus 5.5`、`gpt-sol-6.1` 混合模型进行开发。
+
+### 本人完成
+
+- **CMC 重写逻辑**：核心重写逻辑由本人编写。
+- **CMC Override**：由本人测试并实现。
+- **项目整体设计与核心功能**：由本人完成。
+- **角色摄像机人称切换**：由本人编写。
+- **HUD 搭建**：由本人完成。
+
+### AI 参与
+
+**AI 辅助内容：**
+
+- **LLM 使用范围**：仅用于 **Code Explanation**、**轻量开发**、**文本格式美化**。
+- **代码注释**：AI 辅助编写、润色、补全。
+- **灵感 / 思考 / 启发注释**：AI 辅助整理和记录。
+- **少量非核心边角功能**：AI 辅助完成。
+
+**AI 参与的功能性内容：**
+
+- **重生点 / 检查点设置和调试**
+- **Source / UE 地图测量场**：通过 **AI + Blender** 实现。
+
+---
+
 ## Citations（参考资源）
 
 - [Valve Source SDK 2013 — gamemovement.cpp](https://github.com/ValveSoftware/source-sdk-2013/blob/master/src/game/shared/gamemovement.cpp)
@@ -82,13 +121,5 @@ UE5 默认地面逻辑会**直接杀死 Bhop 速度**：
 
 ---
 
-## 开发学习记录
 
-一些过程中的经验与踩坑：
 
-- **Live Coding 的坑**：Live Coding 热更新不会覆盖所有改动，涉及头文件/新增类时必须完整重编译，否则会出现"代码改了但行为不变"
-- **蓝图协作**：C++ 类与蓝图紧密耦合，GameMode / Controller / 输入映射等必须在蓝图/Project Settings 侧配对配置
-- **UE 官方文档**：难度不在 C++ 而在于需要先理解引擎概念（pawn/controller/component 生命周期），否则看起来非常吃力
-- **调试规范**：所有调试输出（屏幕消息、DrawDebugLine）收敛到 `DevMode` 统一开关，避免每帧刷屏
-
-（这里不做进一步更新 因为写在Readme里太臃肿了）
