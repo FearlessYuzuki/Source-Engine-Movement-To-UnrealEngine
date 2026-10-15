@@ -7,7 +7,7 @@
 
 ## 项目简介
 
-作为 4000+ 小时 CS 玩家，我希望证明一件事：**Bhop / Strafe 的手感背后有一套精确的物理模型，而不是"引擎的玄学"**。
+作为 4000+ 小时 CS 玩家，最近也在往游戏开发发展 我想实现的是**Bhop / Strafe 这一近乎是Source系引擎独占的身法魅力 是可以在UE里复刻出来的（也是对瓦罗兰特糟糕的移动的好奇）"**。
 
 本项目不满足于"抄公式"，而是沿着 Source 的完整物理管线走了一遍：
 
@@ -59,7 +59,7 @@ UE5 默认地面逻辑会**直接杀死 Bhop 速度**：
 - [x] UMG 调试面板（`BindWidget` + `AddDynamic` 委托绑定）
 - [x] Enhanced Input 体系（PlayerController 侧集中注册 IMC）
 - [x] `DevMode` 统一调试开关：全部调试输出收敛到一个 `bDevMode`，正常游玩零打扰
-- [ ] KZ 身法测量地图：刻度跑道 + gap 阵列 + 速度显示（进行中）
+- [x] KZ 身法测量地图：刻度跑道 + gap 阵列 + 速度显示
 - [ ] `sv_*` 风格参数调优体系（进行中）
 
 ---
@@ -67,7 +67,7 @@ UE5 默认地面逻辑会**直接杀死 Bhop 速度**：
 ## 研究与笔记
 
 - **博客**: [fearlessyuzuki.github.io](https://fearlessyuzuki.github.io)
-- **核心研究笔记**：《Review the code from 2013 —— `gamemovement.cpp` 逐段剖析》，本人撰写，包含 `CheckParameters / PlayerMove / FullWalkMove / CategorizePosition` 的拆解，重点分析了分步重力（`StartGravity / FinishGravity` 各施加一半的 `0.5`）、视角同步归一化（`YAW ± 360` 处理）、ladder 特殊移动模式等机制。
+- **核心研究笔记**：《Review the code from 2013 —— `gamemovement.cpp` 逐段剖析》，本人撰写(都是个人见解 AI含量很低 最多的AI是用来规则格式)，包含 `CheckParameters / PlayerMove / FullWalkMove / CategorizePosition` 的拆解，重点分析了分步重力（`StartGravity / FinishGravity` 各施加一半的 `0.5`）、视角同步归一化（`YAW ± 360` 处理）、ladder 特殊移动模式等机制。
 
 ---
 
@@ -90,3 +90,5 @@ UE5 默认地面逻辑会**直接杀死 Bhop 速度**：
 - **蓝图协作**：C++ 类与蓝图紧密耦合，GameMode / Controller / 输入映射等必须在蓝图/Project Settings 侧配对配置
 - **UE 官方文档**：难度不在 C++ 而在于需要先理解引擎概念（pawn/controller/component 生命周期），否则看起来非常吃力
 - **调试规范**：所有调试输出（屏幕消息、DrawDebugLine）收敛到 `DevMode` 统一开关，避免每帧刷屏
+
+（这里不做进一步更新 因为写在Readme里太臃肿了）
