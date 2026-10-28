@@ -13,9 +13,11 @@ USourceCharacterMovementComponent::USourceCharacterMovementComponent()
 	//H3 fix: one-time init moved out of CalcVelocity. Runtime values are owned by UPROPERTYs.
 	GroundFriction = 8.f;
 	MaxAcceleration = 600.f;
-
+	
 	// [路线B 说明] MaxAcceleration 在路线 B 下不再参与输入合成（原来它经
 	// UE 的 ScaleInputAcceleration 把标量变成 Acceleration）。保留不动，未删除。
+	
+	JumpZVelocity = 600.f;
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
