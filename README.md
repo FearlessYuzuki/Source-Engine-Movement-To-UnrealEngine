@@ -66,11 +66,20 @@ UE5 默认地面逻辑会**直接杀死 Bhop 速度**：
 
 ## 研究与笔记
 
-- **博客**: [fearlessyuzuki.github.io](https://fearlessyuzuki.github.io)
+- **博客**: [fearlessyuzuki.github.io](https://fearlessyuzuki.github.io)(正在重构中 暂时停止更新)
 - **核心研究笔记**：《Review the code from 2013 —— `gamemovement.cpp` 逐段剖析》，本人撰写(都是个人见解 AI含量很低 最多的AI是用来规则格式)，包含 `CheckParameters / PlayerMove / FullWalkMove / CategorizePosition` 的拆解，重点分析了分步重力（`StartGravity / FinishGravity` 各施加一半的 `0.5`）、视角同步归一化（`YAW ± 360` 处理）、ladder 特殊移动模式等机制。
 
 ---
 
+## 后续开发
+
+- **路线**: 近期受到来自2017年在Steam上的游戏 Refunct的启发 本项目的移动完全可以结合UE的优势也就是画面和光照来进行更进一步的开发
+- ###### 渲染管线
+- ###### 地面变化
+- ###### 角色滑铲（下蹲）
+等等...
+
+---
 ## AI 使用注意！！
 
 > ⚠️ **本项目包含 AI 工具辅助开发。**
