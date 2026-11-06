@@ -11,6 +11,10 @@
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
+class UBoxComponent;
+class UStaticMeshComponent;
+class UMaterialInterface;
+
 // Sets default values
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<USourceCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -411,7 +415,7 @@ void APlayerCharacter::SetSpawnPoint(AActor* InPoint)
 	// 调试: DevMode 下打印新重生点
 	if (bDevMode && InPoint)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow,
+		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Yellow,
 			FString::Printf(TEXT("[Player] 重生点已更新: %s @ %s"),
 				*InPoint->GetName(), *InPoint->GetActorLocation().ToString()));
 	}

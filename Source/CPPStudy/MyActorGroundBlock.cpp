@@ -2,11 +2,10 @@
 
 
 #include "MyActorGroundBlock.h"
-
-#include "DiffUtils.h"
-#include "AI/NavigationModifier.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+
+class Enigne;
 
 // Sets default values
 AMyActorGroundBlock::AMyActorGroundBlock()
@@ -21,6 +20,8 @@ AMyActorGroundBlock::AMyActorGroundBlock()
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>("TriggerBox");
 	TriggerBox->SetupAttachment(RootComponent);
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	TriggerBox->SetGenerateOverlapEvents(true);
+	
 	
 }
 
@@ -28,7 +29,11 @@ AMyActorGroundBlock::AMyActorGroundBlock()
 void AMyActorGroundBlock::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (TriggerBox)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,10,FColor::Red,TEXT("Trigger Box Begin"));
+	}
+	TriggerBox->OnComponentBeginOverlap.AddDynamic(this,&AMyActorGroundBlock::DebugTriggered);
 }
 
 // Called every frame
@@ -37,4 +42,13 @@ void AMyActorGroundBlock::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+void AMyActorGroundBlock::DebugTriggered(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Emerald,
+		TEXT("Player is overlapping!!"));
+	UE_LOG(LogTemp, Warning, TEXT("绑定成功！"));
+}
+
 
