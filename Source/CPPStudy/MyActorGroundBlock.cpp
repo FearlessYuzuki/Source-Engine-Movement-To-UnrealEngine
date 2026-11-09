@@ -2,6 +2,8 @@
 
 
 #include "MyActorGroundBlock.h"
+
+#include "BaseGizmos/GizmoElementArrowHead.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 
@@ -15,6 +17,11 @@ AMyActorGroundBlock::AMyActorGroundBlock()
 	
 	BasicBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BasicBox"));
 	RootComponent = BasicBox;
+	
+	Cubical = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MaterialChangeInterfaceCubical"));
+	Cubical->SetupAttachment(BasicBox);
+	Cubical->SetStaticMesh(BaseMesh);
+	//TODO: Still Dont know how to config texture 11.10 Must Fix;
 	
 	//Set TriggerBox
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>("TriggerBox");
@@ -31,9 +38,10 @@ void AMyActorGroundBlock::BeginPlay()
 	Super::BeginPlay();
 	if (TriggerBox)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,10,FColor::Red,TEXT("Trigger Box Begin"));
+		TriggerBox->OnComponentBeginOverlap.AddDynamic(this,&AMyActorGroundBlock::DebugTriggered);
+		TriggerBox->OnComponentBeginOverlap.AddDynamic(this,&AMyActorGroundBlock::ChangeBlockTexture);
 	}
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this,&AMyActorGroundBlock::DebugTriggered);
+	
 }
 
 // Called every frame
@@ -48,7 +56,11 @@ void AMyActorGroundBlock::DebugTriggered(UPrimitiveComponent* OverlappedComp, AA
 {
 	GEngine->AddOnScreenDebugMessage(-1,1,FColor::Emerald,
 		TEXT("Player is overlapping!!"));
-	UE_LOG(LogTemp, Warning, TEXT("绑定成功！"));
 }
 
+void AMyActorGroundBlock::ChangeBlockTexture(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	
+}
 

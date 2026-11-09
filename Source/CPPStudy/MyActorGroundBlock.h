@@ -11,12 +11,22 @@ UCLASS()
 class CPPSTUDY_API AMyActorGroundBlock : public AActor
 {
 	GENERATED_BODY()
-	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="SceneComponent",meta = (AllowPrivateAccess = true))
+		
+public:
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="SceneComponent",meta = (AllowPrivateAccess = true))
 	TObjectPtr<UStaticMeshComponent> BasicBox;
 	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="SceneComponent",meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="SceneComponent",meta = (AllowPrivateAccess = true))
 	TObjectPtr<UBoxComponent> TriggerBox;
+	
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="SceneComponent",meta = (AllowPrivateAccess = true))
+	TObjectPtr<UStaticMeshComponent> Cubical;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="BlockMaterial",meta = (AllowPrivateAccess = true))
+	TObjectPtr<UMaterialInterface> BasicMaterialInterface;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
+	TObjectPtr<UStaticMesh> BaseMesh;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -31,7 +41,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	UFUNCTION()
-	virtual void DebugTriggered(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	void DebugTriggered(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION()
+	void ChangeBlockTexture(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category="Overlapped Material Changes settings")
+	UMaterialInterface* OverlappedMaterial;
 };
 
